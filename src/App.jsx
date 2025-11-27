@@ -302,37 +302,7 @@ const App = () => {
       <footer id="contacto" className="bg-zinc-950 text-zinc-400 py-12 border-t border-zinc-800">
         <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-8">
           
-          {/* Columna 1: Marca */}
-          <div className="md:col-span-1">
-            <h4 className="text-white text-xl font-bold mb-4">FERRETERÍA JAVIER</h4>
-            <p className="mb-4 max-w-sm text-sm">
-              Tu ferretería de confianza en Virreyes. Soluciones rápidas, precios justos y la mejor atención del barrio.
-            </p>
-            <div className="text-xs mt-4 pt-4 border-t border-zinc-900">
-              <p>&copy; 2000 Ferretería Javier.</p>
-              <p>Desarrollado por Lucas Ezequiel Perez.</p>
-            </div>
-          </div>
-          
-          {/* Columna 2: Horarios */}
-          <div className="flex flex-col gap-4">
-            <h4 className="text-white font-bold mb-2 flex items-center gap-2">
-              <Clock className="text-yellow-500" size={20} /> Horarios de Atención
-            </h4>
-            <div className="bg-zinc-900 p-4 rounded-lg border border-zinc-800 text-sm">
-              <div className="mb-3">
-                <span className="text-yellow-500 font-bold block uppercase text-xs mb-1">Lunes a Sábados</span>
-                <span className="block">8:00 a 13:00 hs</span>
-                <span className="block">15:00 a 19:00 hs</span>
-              </div>
-              <div>
-                <span className="text-yellow-500 font-bold block uppercase text-xs mb-1">Domingos y Feriados</span>
-                <span className="block">9:00 a 13:00 hs</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Columna 3: Contacto */}
+          {/* Columna 1: Contacto (primero) */}
           <div className="flex flex-col gap-4">
             <h4 className="text-white font-bold mb-2">Contacto & Ubicación</h4>
             <div className="flex items-start gap-3">
@@ -346,6 +316,36 @@ const App = () => {
             <div className="flex items-center gap-3">
               <Mail className="text-yellow-500 flex-shrink-0" size={18} />
               <span>{email}</span>
+            </div>
+          </div>
+          
+          {/* Columna 2: Horarios */}
+          <div className="flex flex-col gap-4">
+            <h4 className="text-white font-bold mb-2 flex items-center gap-2">
+              <Clock className="text-yellow-500" size={20} /> Horarios de Atención
+            </h4>
+            <div className="bg-zinc-900 p-4 rounded-lg border border-zinc-800 text-sm">
+              <div className="mb-3">
+                <span className="text-yellow-500 font-bold block uppercase text-xs mb-1">Lunes a Sábados</span>
+                <span className="block">8:00 a 13:00 hs</span>
+                <span className="block">15:00 a 19:30 hs</span>
+              </div>
+              <div>
+                <span className="text-yellow-500 font-bold block uppercase text-xs mb-1">Domingos y Feriados</span>
+                <span className="block">9:00 a 13:00 hs</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Columna 3: Marca de agua */}
+          <div className="md:col-span-1">
+            <h4 className="text-white text-xl font-bold mb-4">FERRETERÍA JAVIER</h4>
+            <p className="mb-4 max-w-sm text-sm">
+              Tu ferretería de confianza en Virreyes. Soluciones rápidas, precios justos y la mejor atención del barrio.
+            </p>
+            <div className="text-xs mt-4 pt-4 border-t border-zinc-900">
+              <p>&copy; 2000 Ferretería Javier.</p>
+              <p>Desarrollado por Lucas Ezequiel Perez.</p>
             </div>
           </div>
 
