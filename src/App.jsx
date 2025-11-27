@@ -174,32 +174,38 @@ const App = () => {
         </div>
       </section>
 
-      {/* --- CATEGORÍAS RÁPIDAS --- */}
+      {/* --- CATEGORÍAS RÁPIDAS (CORREGIDO: Sin Hover engañoso) --- */}
       <section className="bg-zinc-900 text-white py-12">
         <div className="max-w-6xl mx-auto px-4">
           <h3 className="text-center text-2xl font-bold mb-8">Todo lo que buscas</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="flex flex-col items-center p-4 bg-zinc-800 rounded hover:bg-yellow-500 hover:text-black transition-all cursor-default group">
-              <PaintBucket className="mb-2 group-hover:scale-110 transition-transform" />
-              <span className="font-semibold">Pinturas</span>
+            
+            {/* ÍTEMS ESTÁTICOS (Sin hover amarillo, cursor normal) */}
+            <div className="flex flex-col items-center p-4 bg-zinc-800 rounded cursor-default border border-zinc-700">
+              <PaintBucket className="mb-2 text-yellow-500" />
+              <span className="font-semibold text-zinc-200">Pinturas</span>
             </div>
-            <div className="flex flex-col items-center p-4 bg-zinc-800 rounded hover:bg-yellow-500 hover:text-black transition-all cursor-default group">
-              <Wrench className="mb-2 group-hover:scale-110 transition-transform" />
-              <span className="font-semibold">Herramientas</span>
+            
+            <div className="flex flex-col items-center p-4 bg-zinc-800 rounded cursor-default border border-zinc-700">
+              <Wrench className="mb-2 text-yellow-500" />
+              <span className="font-semibold text-zinc-200">Herramientas</span>
             </div>
-            <div className="flex flex-col items-center p-4 bg-zinc-800 rounded hover:bg-yellow-500 hover:text-black transition-all cursor-default group">
-              <CheckCircle className="mb-2 group-hover:scale-110 transition-transform" />
-              <span className="font-semibold">Fijaciones</span>
+            
+            <div className="flex flex-col items-center p-4 bg-zinc-800 rounded cursor-default border border-zinc-700">
+              <CheckCircle className="mb-2 text-yellow-500" />
+              <span className="font-semibold text-zinc-200">Fijaciones</span>
             </div>
-            <div className="flex flex-col items-center p-4 bg-zinc-800 rounded hover:bg-yellow-500 hover:text-black transition-all cursor-default group">
-              <Send className="mb-2 group-hover:scale-110 transition-transform" />
-              <span className="font-semibold">Electricidad</span>
+            
+            <div className="flex flex-col items-center p-4 bg-zinc-800 rounded cursor-default border border-zinc-700">
+              <Send className="mb-2 text-yellow-500" />
+              <span className="font-semibold text-zinc-200">Electricidad</span>
             </div>
+
           </div>
         </div>
       </section>
 
-      {/* --- ARMADOR DE PRESUPUESTO --- */}
+      {/* --- ARMADOR DE PRESUPUESTO (CORE FEATURE) --- */}
       <section id="presupuesto" className="py-16 px-4 bg-yellow-50">
         <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-yellow-200">
           <div className="bg-zinc-900 p-6 text-center">
@@ -224,7 +230,7 @@ const App = () => {
                 <label className="block text-xs font-bold text-zinc-500 uppercase mb-1">Cantidad / Medida <span className="text-zinc-400 font-normal lowercase">(opcional)</span></label>
                 <input 
                   type="text" 
-                  placeholder="Ej: 100 u./2 lts." 
+                  placeholder="Ej: 100 u." 
                   className="w-full p-3 border border-zinc-300 rounded focus:outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500"
                   value={currentQty}
                   onChange={(e) => setCurrentQty(e.target.value)}
