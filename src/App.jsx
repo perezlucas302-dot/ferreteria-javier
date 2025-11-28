@@ -230,7 +230,7 @@ const App = () => {
                 <label className="block text-xs font-bold text-zinc-500 uppercase mb-1">Cantidad / Medida <span className="text-zinc-400 font-normal lowercase">(opcional)</span></label>
                 <input 
                   type="text" 
-                  placeholder="Ej: 100 u." 
+                  placeholder="Ej: 100 u./ 2 lts." 
                   className="w-full p-3 border border-zinc-300 rounded focus:outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500"
                   value={currentQty}
                   onChange={(e) => setCurrentQty(e.target.value)}
