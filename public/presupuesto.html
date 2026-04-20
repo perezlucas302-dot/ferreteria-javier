@@ -28,6 +28,7 @@
     .btn-print { background: #333; color: white; }
     .btn-print:hover { background: #555; }
     @media print {
+      @page { margin: 1cm; }
       body { background: white; padding: 0; }
       .container { box-shadow: none; }
       .btn-add, .actions, .btn-remove { display: none; }
