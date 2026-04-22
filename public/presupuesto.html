@@ -32,7 +32,8 @@
       body { background: white; padding: 0; }
       .container { box-shadow: none; }
       .btn-add, .actions, .btn-remove { display: none; }
-      td input, td select, .cliente-input { border: none; background: transparent; }
+      td input, td select, .cliente-input { border: none; background: transparent; appearance: none; }
+input::placeholder { color: transparent; }
     }
   </style>
 </head>
@@ -42,12 +43,13 @@
       <h1>FERRETERÍA JAVIER</h1>
       <p>Electricidad · Pinturería · Sanitarios</p>
       <p>Av. Avellaneda 3384 · Virreyes, Buenos Aires</p>
+      <p>Cel: 11 6402-6088</p>
     </div>
 
     <div class="meta">
       <span>Presupuesto N° <strong id="num">0001</strong></span>
       <span>Fecha: <strong id="fecha"></strong></span>
-      <span>Señor/es: <input type="text" class="cliente-input" placeholder="Nombre del cliente" /></span>
+      <span>Señ@r/a: <input type="text" class="cliente-input" placeholder="Nombre del cliente" /></span>
     </div>
 
     <table>
@@ -80,7 +82,7 @@
   </div>
 
   <script>
-    const UNIDADES = ['unid.', 'mts', 'lts', 'kg', 'cjs', 'pares', 'rollos'];
+    const UNIDADES = ['unid.', 'metros', 'litros', 'kg', 'cjs', 'tira/s', 'rollos'];
 
     document.getElementById('fecha').textContent = new Date().toLocaleDateString('es-AR', {
       day: '2-digit', month: '2-digit', year: 'numeric'
