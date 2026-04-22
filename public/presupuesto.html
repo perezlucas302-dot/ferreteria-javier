@@ -94,7 +94,7 @@ input::placeholder { color: transparent; }
         <td><input type="number" min="0" value="1" oninput="calcular()" /></td>
         <td><select oninput="calcular()">${UNIDADES.map(u => `<option>${u}</option>`).join('')}</select></td>
         <td><input type="text" placeholder="Descripción del producto" /></td>
-        <td><input type="number" min="0" value="0" oninput="calcular()" /></td>
+        <td><input type="number" min="0" placeholder="0" oninput="calcular()" /></td>
         <td style="text-align:right" class="subtotal">0,00</td>
         <td><button class="btn-remove" onclick="this.closest('tr').remove();calcular()">×</button></td>
       `;
