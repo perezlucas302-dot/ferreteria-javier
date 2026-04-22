@@ -11,10 +11,11 @@
     .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 1rem; margin-bottom: 1rem; }
     .header h1 { font-size: 22px; letter-spacing: 2px; }
     .header p { font-size: 12px; color: #555; margin-top: 3px; }
-    .meta { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 1rem; color: #333; }
+    .meta { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 1rem; color: #333; flex-wrap: wrap; gap: 6px; }
+    .cliente-input { border: 1px solid #ddd; border-radius: 4px; padding: 3px 6px; font-size: 13px; width: 160px; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 1rem; }
     th { text-align: left; padding: 6px 4px; border-bottom: 1px solid #333; font-size: 12px; color: #555; }
-    td { padding: 4px; vertical-align: middle; }
+    td { padding: 4px; vertical-align: middle; position: relative; }
     td input, td select { width: 100%; border: 1px solid #ddd; border-radius: 4px; padding: 4px 6px; font-size: 13px; }
     .total-row { font-weight: bold; font-size: 15px; text-align: right; padding: 8px 4px; border-top: 2px solid #333; }
     .btn-add { width: 100%; padding: 8px; border: 1px dashed #aaa; border-radius: 6px; background: transparent; color: #666; font-size: 13px; cursor: pointer; margin-bottom: 1rem; }
@@ -27,13 +28,18 @@
     .btn-wpp:hover { background: #1ebe5d; }
     .btn-print { background: #333; color: white; }
     .btn-print:hover { background: #555; }
+    .autocomplete { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ddd; border-radius: 4px; z-index: 100; max-height: 150px; overflow-y: auto; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    .autocomplete-item { padding: 6px 10px; cursor: pointer; font-size: 13px; display: flex; justify-content: space-between; }
+    .autocomplete-item:hover { background: #f0f0f0; }
+    .autocomplete-item span { color: #888; font-size: 12px; }
+    .msg-guardado { font-size: 11px; color: green; text-align: center; margin-bottom: 8px; display: none; }
     @media print {
       @page { margin: 1cm; }
       body { background: white; padding: 0; }
       .container { box-shadow: none; }
       .btn-add, .actions, .btn-remove { display: none; }
       td input, td select, .cliente-input { border: none; background: transparent; appearance: none; }
-input::placeholder { color: transparent; }
+      input::placeholder { color: transparent; }
     }
   </style>
 </head>
@@ -51,6 +57,8 @@ input::placeholder { color: transparent; }
       <span>Fecha: <strong id="fecha"></strong></span>
       <span>Señor/a: <input type="text" class="cliente-input" placeholder="Nombre del cliente" /></span>
     </div>
+
+    <p class="msg-guardado" id="msg-guardado">✓ Producto guardado</p>
 
     <table>
       <thead>
@@ -81,28 +89,107 @@ input::placeholder { color: transparent; }
     </div>
   </div>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, addDoc, query, where, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBn6pAL_PAgGPIVAijSKKwolLTseYqf1JQ",
+      authDomain: "ferreteria-javier-f58f0.firebaseapp.com",
+      projectId: "ferreteria-javier-f58f0",
+      storageBucket: "ferreteria-javier-f58f0.firebasestorage.app",
+      messagingSenderId: "1068170818412",
+      appId: "1:1068170818412:web:4affc30dcdfdff40ef3949"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
     const UNIDADES = ['unid.', 'metros', 'litros', 'kg', 'cjs', 'tira/s', 'rollos'];
 
     document.getElementById('fecha').textContent = new Date().toLocaleDateString('es-AR', {
       day: '2-digit', month: '2-digit', year: 'numeric'
     });
 
-    function agregarItem() {
+    let productosCache = [];
+
+    async function cargarProductos() {
+      const snap = await getDocs(collection(db, "productos"));
+      productosCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    }
+
+    await cargarProductos();
+
+    function mostrarGuardado() {
+      const msg = document.getElementById('msg-guardado');
+      msg.style.display = 'block';
+      setTimeout(() => msg.style.display = 'none', 2000);
+    }
+
+    window.agregarItem = function() {
+      const tbody = document.getElementById('items');
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td><input type="number" min="0" value="1" oninput="calcular()" /></td>
         <td><select oninput="calcular()">${UNIDADES.map(u => `<option>${u}</option>`).join('')}</select></td>
-        <td><input type="text" placeholder="Descripción del producto" /></td>
-        <td><input type="number" min="0" placeholder="0" oninput="calcular()" /></td>
+        <td style="position:relative">
+          <input type="text" placeholder="Descripción del producto" class="desc-input" />
+          <div class="autocomplete" style="display:none"></div>
+        </td>
+        <td><input type="number" min="0" placeholder="0" oninput="calcular()" class="precio-input" /></td>
         <td style="text-align:right" class="subtotal">0,00</td>
         <td><button class="btn-remove" onclick="this.closest('tr').remove();calcular()">×</button></td>
       `;
-      document.getElementById('items').appendChild(tr);
+      tbody.appendChild(tr);
+
+      const descInput = tr.querySelector('.desc-input');
+      const precioInput = tr.querySelector('.precio-input');
+      const autocomplete = tr.querySelector('.autocomplete');
+
+      descInput.addEventListener('input', () => {
+        const val = descInput.value.toLowerCase().trim();
+        if (val.length < 2) { autocomplete.style.display = 'none'; return; }
+        const matches = productosCache.filter(p => p.nombre.toLowerCase().includes(val));
+        if (matches.length === 0) { autocomplete.style.display = 'none'; return; }
+        autocomplete.innerHTML = matches.map(p =>
+          `<div class="autocomplete-item" data-nombre="${p.nombre}" data-precio="${p.precio}">
+            ${p.nombre} <span>$${Number(p.precio).toLocaleString('es-AR')}</span>
+          </div>`
+        ).join('');
+        autocomplete.style.display = 'block';
+        autocomplete.querySelectorAll('.autocomplete-item').forEach(item => {
+          item.addEventListener('click', () => {
+            descInput.value = item.dataset.nombre;
+            precioInput.value = item.dataset.precio;
+            autocomplete.style.display = 'none';
+            calcular();
+          });
+        });
+      });
+
+      descInput.addEventListener('blur', () => {
+        setTimeout(async () => {
+          autocomplete.style.display = 'none';
+          const nombre = descInput.value.trim();
+          const precio = parseFloat(precioInput.value);
+          if (!nombre || !precio) return;
+          const existe = productosCache.find(p => p.nombre.toLowerCase() === nombre.toLowerCase());
+          if (!existe) {
+            await addDoc(collection(db, "productos"), { nombre, precio });
+            await cargarProductos();
+            mostrarGuardado();
+          } else if (existe.precio !== precio) {
+            await updateDoc(doc(db, "productos", existe.id), { precio });
+            await cargarProductos();
+            mostrarGuardado();
+          }
+        }, 200);
+      });
+
       calcular();
     }
 
-    function calcular() {
+    window.calcular = function() {
       let total = 0;
       document.querySelectorAll('#items tr').forEach(tr => {
         const cant = parseFloat(tr.cells[0].querySelector('input').value) || 0;
@@ -118,10 +205,13 @@ input::placeholder { color: transparent; }
       return n.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    function enviarWpp() {
+    window.enviarWpp = function() {
       const fecha = document.getElementById('fecha').textContent;
       const num = document.getElementById('num').textContent;
-      let msg = `*FERRETERÍA JAVIER*\nPresupuesto N° ${num} - ${fecha}\n\n`;
+      const cliente = document.querySelector('.cliente-input').value || '';
+      let msg = `*FERRETERÍA JAVIER*\nPresupuesto N° ${num} - ${fecha}`;
+      if (cliente) msg += `\nSr/a: ${cliente}`;
+      msg += '\n\n';
       document.querySelectorAll('#items tr').forEach(tr => {
         const cant = tr.cells[0].querySelector('input').value;
         const unit = tr.cells[1].querySelector('select').value;
