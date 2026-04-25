@@ -38,7 +38,7 @@
       body { background: white; padding: 0; }
       .container { box-shadow: none; }
       .btn-add, .actions, .btn-remove { display: none; }
-      td input, td select, .cliente-input { border: none; background: transparent; appearance: none; }
+      td input, td select, .cliente-input { border: none; background: transparent; appearance: none; -webkit-appearance: none; -moz-appearance: none; }
       input::placeholder { color: transparent; }
     }
   </style>
@@ -85,13 +85,13 @@
 
     <div class="actions">
       <button class="btn btn-wpp" onclick="enviarWpp()">WhatsApp</button>
-      <button class="btn btn-print" onclick="window.print()">Imprimir</button>
+      <button class="btn btn-print" onclick="imprimirYGuardar()">Imprimir</button>
     </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
-    import { getFirestore, collection, getDocs, addDoc, query, where, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, addDoc, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBn6pAL_PAgGPIVAijSKKwolLTseYqf1JQ",
@@ -126,7 +126,32 @@
       setTimeout(() => msg.style.display = 'none', 2000);
     }
 
+    async function guardarTodos() {
+      const filas = document.querySelectorAll('#items tr');
+      let huboNuevo = false;
+      for (const tr of filas) {
+        if (tr.dataset.yaGuardado === 'true') continue;
+        const nombre = tr.querySelector('.desc-input')?.value.trim();
+        const precio = parseFloat(tr.querySelector('.precio-input')?.value);
+        if (!nombre || !precio) continue;
+        const existe = productosCache.find(p => p.nombre.toLowerCase() === nombre.toLowerCase());
+        if (!existe) {
+          await addDoc(collection(db, "productos"), { nombre, precio });
+          huboNuevo = true;
+        } else if (existe.precio !== precio) {
+          await updateDoc(doc(db, "productos", existe.id), { precio });
+          huboNuevo = true;
+        }
+        tr.dataset.yaGuardado = 'true';
+      }
+      if (huboNuevo) {
+        await cargarProductos();
+        mostrarGuardado();
+      }
+    }
+
     window.agregarItem = function() {
+      guardarTodos();
       const tbody = document.getElementById('items');
       const tr = document.createElement('tr');
       tr.innerHTML = `
@@ -162,28 +187,14 @@
             descInput.value = item.dataset.nombre;
             precioInput.value = item.dataset.precio;
             autocomplete.style.display = 'none';
+            tr.dataset.yaGuardado = 'true';
             calcular();
           });
         });
       });
 
       descInput.addEventListener('blur', () => {
-        setTimeout(async () => {
-          autocomplete.style.display = 'none';
-          const nombre = descInput.value.trim();
-          const precio = parseFloat(precioInput.value);
-          if (!nombre || !precio) return;
-          const existe = productosCache.find(p => p.nombre.toLowerCase() === nombre.toLowerCase());
-          if (!existe) {
-            await addDoc(collection(db, "productos"), { nombre, precio });
-            await cargarProductos();
-            mostrarGuardado();
-          } else if (existe.precio !== precio) {
-            await updateDoc(doc(db, "productos", existe.id), { precio });
-            await cargarProductos();
-            mostrarGuardado();
-          }
-        }, 200);
+        setTimeout(() => { autocomplete.style.display = 'none'; }, 200);
       });
 
       calcular();
@@ -205,7 +216,8 @@
       return n.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    window.enviarWpp = function() {
+    window.enviarWpp = async function() {
+      await guardarTodos();
       const fecha = document.getElementById('fecha').textContent;
       const num = document.getElementById('num').textContent;
       const cliente = document.querySelector('.cliente-input').value || '';
@@ -222,6 +234,11 @@
       });
       msg += `\n*TOTAL: $${document.getElementById('total').textContent}*`;
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`);
+    }
+
+    window.imprimirYGuardar = async function() {
+      await guardarTodos();
+      window.print();
     }
 
     agregarItem();
