@@ -11,8 +11,9 @@
     .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 1rem; margin-bottom: 1rem; }
     .header h1 { font-size: 22px; letter-spacing: 2px; }
     .header p { font-size: 12px; color: #555; margin-top: 3px; }
-    .meta { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 1rem; color: #333; flex-wrap: wrap; gap: 6px; }
-    .cliente-input { border: 1px solid #ddd; border-radius: 4px; padding: 3px 6px; font-size: 13px; width: 160px; }
+    .meta-top { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; color: #333; }
+    .meta-bottom { font-size: 13px; margin-bottom: 1rem; color: #333; }
+    .cliente-input { border: 1px solid #ddd; border-radius: 4px; padding: 3px 6px; font-size: 13px; width: 220px; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 1rem; }
     th { text-align: left; padding: 6px 4px; border-bottom: 1px solid #333; font-size: 12px; color: #555; }
     td { padding: 4px; vertical-align: middle; position: relative; }
@@ -43,6 +44,9 @@
       input::placeholder { color: transparent; }
       td select { display: none; }
       .unidad-texto { display: inline; }
+      input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button { display: none; -webkit-appearance: none; }
     }
   </style>
 </head>
@@ -55,9 +59,11 @@
       <p>Cel: 11 6402-6088</p>
     </div>
 
-    <div class="meta">
+    <div class="meta-top">
       <span>Presupuesto N° <strong id="num">0001</strong></span>
       <span>Fecha: <strong id="fecha"></strong></span>
+    </div>
+    <div class="meta-bottom">
       <span>Señor/a: <input type="text" class="cliente-input" placeholder="Nombre del cliente" /></span>
     </div>
 
@@ -179,12 +185,10 @@
       const precioInput = tr.querySelector('.precio-input');
       const autocomplete = tr.querySelector('.autocomplete');
 
-      // Desmarcar yaGuardado si el usuario edita el precio manualmente
       precioInput.addEventListener('input', () => {
         tr.dataset.yaGuardado = 'false';
       });
 
-      // Desmarcar yaGuardado si el usuario edita el nombre manualmente
       descInput.addEventListener('input', () => {
         tr.dataset.yaGuardado = 'false';
         const val = descInput.value.toLowerCase().trim();
