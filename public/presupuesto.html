@@ -33,13 +33,16 @@
     .autocomplete-item:hover { background: #f0f0f0; }
     .autocomplete-item span { color: #888; font-size: 12px; }
     .msg-guardado { font-size: 11px; color: green; text-align: center; margin-bottom: 8px; display: none; }
+    .unidad-texto { display: none; font-size: 13px; }
     @media print {
       @page { margin: 1cm; }
       body { background: white; padding: 0; }
       .container { box-shadow: none; }
-      .btn-add, .actions, .btn-remove { display: none; }
-      td input, td select, .cliente-input { border: none; background: transparent; appearance: none; -webkit-appearance: none; -moz-appearance: none; }
+      .btn-add, .actions, .btn-remove, .msg-guardado { display: none; }
+      td input, .cliente-input { border: none; background: transparent; }
       input::placeholder { color: transparent; }
+      td select { display: none; }
+      .unidad-texto { display: inline; }
     }
   </style>
 </head>
@@ -105,7 +108,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const UNIDADES = ['unid.', 'metros', 'litros', 'kg', 'cjs', 'tira/s', 'rollos'];
+    const UNIDADES = ['unid.', 'metro/s', 'litro/s', 'kg', 'cjs', 'tira/s', 'rollos'];
 
     document.getElementById('fecha').textContent = new Date().toLocaleDateString('es-AR', {
       day: '2-digit', month: '2-digit', year: 'numeric'
@@ -156,7 +159,12 @@
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td><input type="number" min="0" value="1" oninput="calcular()" /></td>
-        <td><select oninput="calcular()">${UNIDADES.map(u => `<option>${u}</option>`).join('')}</select></td>
+        <td>
+          <select class="unidad-select" oninput="actualizarTextoUnidad(this)">
+            ${UNIDADES.map(u => `<option>${u}</option>`).join('')}
+          </select>
+          <span class="unidad-texto">${UNIDADES[0]}</span>
+        </td>
         <td style="position:relative">
           <input type="text" placeholder="Descripción del producto" class="desc-input" />
           <div class="autocomplete" style="display:none"></div>
@@ -171,7 +179,14 @@
       const precioInput = tr.querySelector('.precio-input');
       const autocomplete = tr.querySelector('.autocomplete');
 
+      // Desmarcar yaGuardado si el usuario edita el precio manualmente
+      precioInput.addEventListener('input', () => {
+        tr.dataset.yaGuardado = 'false';
+      });
+
+      // Desmarcar yaGuardado si el usuario edita el nombre manualmente
       descInput.addEventListener('input', () => {
+        tr.dataset.yaGuardado = 'false';
         const val = descInput.value.toLowerCase().trim();
         if (val.length < 2) { autocomplete.style.display = 'none'; return; }
         const matches = productosCache.filter(p => p.nombre.toLowerCase().includes(val));
@@ -197,6 +212,12 @@
         setTimeout(() => { autocomplete.style.display = 'none'; }, 200);
       });
 
+      calcular();
+    }
+
+    window.actualizarTextoUnidad = function(select) {
+      const texto = select.closest('td').querySelector('.unidad-texto');
+      if (texto) texto.textContent = select.value;
       calcular();
     }
 
