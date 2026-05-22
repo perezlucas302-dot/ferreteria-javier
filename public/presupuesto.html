@@ -19,7 +19,8 @@
     td { padding: 4px; vertical-align: middle; position: relative; }
     td input, td select { width: 100%; border: 1px solid #ddd; border-radius: 4px; padding: 4px 6px; font-size: 13px; }
     .total-row { font-weight: bold; font-size: 15px; text-align: right; padding: 8px 4px; border-top: 2px solid #333; }
-    .btn-add { width: 100%; padding: 8px; border: 1px dashed #aaa; border-radius: 6px; background: transparent; color: #666; font-size: 13px; cursor: pointer; margin-bottom: 1rem; }
+    .fila-fantasma td { border: none; padding: 0; height: 0; }
+    .btn-add { width: 100%; padding: 8px; border: 1px dashed #aaa; border-radius: 6px; background: transparent; color: #666; font-size: 13px; cursor: pointer; margin-bottom: 1rem; margin-top: 0.5rem; }
     .btn-add:hover { background: #f0f0f0; }
     .btn-remove { background: none; border: none; color: #aaa; cursor: pointer; font-size: 18px; }
     .btn-remove:hover { color: red; }
@@ -35,10 +36,20 @@
     .autocomplete-item span { color: #888; font-size: 12px; }
     .msg-guardado { font-size: 11px; color: green; text-align: center; margin-bottom: 8px; display: none; }
     .unidad-texto { display: none; font-size: 13px; }
+
     @media print {
-      @page { margin: 1cm; }
-      body { background: white; padding: 0; }
-      .container { box-shadow: none; }
+      @page { size: A4 landscape; margin: 0; }
+      html, body { margin: 0; padding: 0; background: white; }
+      .container {
+        box-shadow: none;
+        border-radius: 0;
+        padding: 0.5cm;
+        width: 148.5mm;
+        max-width: 148.5mm;
+        margin-top: 105mm; /* mitad de 210mm = abajo de la hoja */
+        border-right: 1px dashed #bbb;
+        border-top: 1px dashed #bbb;
+      }
       .btn-add, .actions, .btn-remove, .msg-guardado { display: none; }
       td input, .cliente-input { border: none; background: transparent; }
       input::placeholder { color: transparent; }
@@ -47,6 +58,22 @@
       input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
       input[type="number"]::-webkit-inner-spin-button,
       input[type="number"]::-webkit-outer-spin-button { display: none; -webkit-appearance: none; }
+      /* Nombre ferretería — 2 escalones más grande: 14px → 18px */
+      .header { padding-bottom: 0.3rem; margin-bottom: 0.3rem; }
+      .header h1 { font-size: 18px; letter-spacing: 1px; }
+      /* Info dirección/tel/IG — 1 escalón más grande: 9px → 11px */
+      .header p { font-size: 11px; margin-top: 2px; }
+      /* Resto del presupuesto — 1 escalón más grande */
+      .meta-top { font-size: 11px; margin-bottom: 2px; }
+      .meta-bottom { font-size: 11px; margin-bottom: 0.3rem; }
+      .cliente-input { font-size: 11px; width: 180px; }
+      th { font-size: 10px; padding: 3px 2px; }
+      td { padding: 2px; font-size: 11px; }
+      td input { font-size: 11px; }
+      .unidad-texto { font-size: 11px; }
+      table { font-size: 11px; margin-bottom: 0; }
+      .total-row { font-size: 12px; padding: 5px 2px; border-top: 1.5px solid #333; }
+      .fila-fantasma td { height: 7mm; border: none; }
     }
   </style>
 </head>
@@ -56,7 +83,7 @@
       <h1>FERRETERÍA JAVIER</h1>
       <p>Electricidad · Pinturería · Sanitarios</p>
       <p>Av. Avellaneda 3384 · Virreyes, Buenos Aires</p>
-      <p>Cel: 11 6402-6088</p>
+      <p>Cel: 11 6402-6088 · IG: @ferreteriajavier.7</p>
     </div>
 
     <div class="meta-top">
@@ -72,15 +99,16 @@
     <table>
       <thead>
         <tr>
-          <th style="width:55px">Cant.</th>
-          <th style="width:75px">Unidad</th>
+          <th style="width:45px">Cant.</th>
+          <th style="width:65px">Unidad</th>
           <th>Descripción</th>
           <th style="width:85px">Precio u.</th>
           <th style="width:80px;text-align:right">Total</th>
-          <th style="width:24px"></th>
+          <th style="width:22px"></th>
         </tr>
       </thead>
       <tbody id="items"></tbody>
+      <tbody id="fantasmas"></tbody>
       <tfoot>
         <tr>
           <td colspan="4" class="total-row">TOTAL $</td>
@@ -115,6 +143,7 @@
     const db = getFirestore(app);
 
     const UNIDADES = ['unid.', 'metro/s', 'litro/s', 'kg', 'cjs', 'tira/s', 'rollos'];
+    const MAX_FILAS = 14;
 
     document.getElementById('fecha').textContent = new Date().toLocaleDateString('es-AR', {
       day: '2-digit', month: '2-digit', year: 'numeric'
@@ -133,6 +162,19 @@
       const msg = document.getElementById('msg-guardado');
       msg.style.display = 'block';
       setTimeout(() => msg.style.display = 'none', 2000);
+    }
+
+    function actualizarFantasmas() {
+      const fantasmas = document.getElementById('fantasmas');
+      const itemsReales = document.querySelectorAll('#items tr:not([style*="display: none"])').length;
+      const restantes = Math.max(0, MAX_FILAS - itemsReales);
+      fantasmas.innerHTML = '';
+      for (let i = 0; i < restantes; i++) {
+        const tr = document.createElement('tr');
+        tr.className = 'fila-fantasma';
+        tr.innerHTML = '<td colspan="6"></td>';
+        fantasmas.appendChild(tr);
+      }
     }
 
     async function guardarTodos() {
@@ -177,7 +219,7 @@
         </td>
         <td><input type="number" min="0" placeholder="0" oninput="calcular()" class="precio-input" /></td>
         <td style="text-align:right" class="subtotal">0,00</td>
-        <td><button class="btn-remove" onclick="this.closest('tr').remove();calcular()">×</button></td>
+        <td><button class="btn-remove" onclick="this.closest('tr').remove();calcular();actualizarFantasmas()">×</button></td>
       `;
       tbody.appendChild(tr);
 
@@ -185,9 +227,7 @@
       const precioInput = tr.querySelector('.precio-input');
       const autocomplete = tr.querySelector('.autocomplete');
 
-      precioInput.addEventListener('input', () => {
-        tr.dataset.yaGuardado = 'false';
-      });
+      precioInput.addEventListener('input', () => { tr.dataset.yaGuardado = 'false'; });
 
       descInput.addEventListener('input', () => {
         tr.dataset.yaGuardado = 'false';
@@ -217,6 +257,7 @@
       });
 
       calcular();
+      actualizarFantasmas();
     }
 
     window.actualizarTextoUnidad = function(select) {
@@ -263,11 +304,20 @@
 
     window.imprimirYGuardar = async function() {
       await guardarTodos();
+      const filas = document.querySelectorAll('#items tr');
+      filas.forEach(tr => {
+        const desc = tr.querySelector('.desc-input')?.value.trim();
+        if (!desc) tr.style.display = 'none';
+      });
+      actualizarFantasmas();
       window.print();
+      filas.forEach(tr => tr.style.display = '');
+      actualizarFantasmas();
     }
 
     agregarItem();
     agregarItem();
+    actualizarFantasmas();
   </script>
 </body>
 </html>
