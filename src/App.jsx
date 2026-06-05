@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Phone, MapPin, Mail, Hammer, Wrench, PaintBucket, Trash2, Plus, Send, Users, CheckCircle, Clock } from 'lucide-react';
+import { Phone, MapPin, Mail, Hammer, Wrench, PaintBucket, Trash2, Plus, Send, Users, CheckCircle, Clock, Instagram } from 'lucide-react';
 
 const App = () => {
   // Estado para la lista de productos del presupuesto
@@ -324,6 +324,10 @@ const App = () => {
               <span className="hover:text-yellow-500 transition-colors cursor-pointer">11-6402-6088 (WhatsApp)</span>
             </div>
             <div className="flex items-center gap-3">
+              <Instagram className="text-yellow-500 flex-shrink-0" size={18} />
+              <span className="hover:text-yellow-500 transition-colors cursor-pointer">@ferreteiajavier.7</span>  
+            </div>
+            <div className="flex items-center gap-3">
               <Mail className="text-yellow-500 flex-shrink-0" size={18} />
               <span>{email}</span>
             </div>
@@ -338,7 +342,7 @@ const App = () => {
               <div className="mb-3">
                 <span className="text-yellow-500 font-bold block uppercase text-xs mb-1">Lunes a Sábados</span>
                 <span className="block">8:00 a 13:00 hs</span>
-                <span className="block">15:00 a 19:30 hs</span>
+                <span className="block">15:00 a 19:00 hs</span>
               </div>
               <div>
                 <span className="text-yellow-500 font-bold block uppercase text-xs mb-1">Domingos y Feriados</span>
