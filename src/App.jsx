@@ -320,7 +320,7 @@ const App = () => {
               <span>{address}</span>
             </div>
             <div className="flex items-center gap-3">
-              <WhatsApp className="text-yellow-500 flex-shrink-0" size={18} />
+              <Phone className="text-yellow-500 flex-shrink-0" size={18} />
               <a
                 href="https://wa.me/5491164026088" 
                 target="_blank" 
@@ -332,7 +332,14 @@ const App = () => {
             </div>
             <div className="flex items-center gap-3">
               <Instagram className="text-yellow-500 flex-shrink-0" size={18} />
-              <span className="hover:text-yellow-500 transition-colors cursor-pointer">@ferreteriajavier.7</span>  
+              <a
+                href="https://www.instagram.com/ferreteriajavier.7"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-yellow-500 transition-colors cursor-pointer"
+              >
+                @ferreteriajavier.7
+              </a>
             </div>
             <div className="flex items-center gap-3">
               <Mail className="text-yellow-500 flex-shrink-0" size={18} />
