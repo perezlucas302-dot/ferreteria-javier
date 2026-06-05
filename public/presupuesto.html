@@ -28,7 +28,8 @@
       margin: 0;
     }
     input[type="number"] {
-      -moz-appearance: textfield;
+      -moz-appearance: textfield; /* Para Firefox */
+  appearance: textfield;      /* Estándar universal */
     }
 
     .totales-container { display: flex; justify-content: space-between; border-top: 2px solid #333; padding-top: 10px; margin-top: auto; font-weight: bold; font-size: 16px; margin-bottom: 10px; }
