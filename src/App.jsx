@@ -340,7 +340,7 @@ const App = () => {
             </h4>
             <div className="bg-zinc-900 p-4 rounded-lg border border-zinc-800 text-sm">
               <div className="mb-3">
-                <span className="text-yellow-500 font-bold block uppercase text-xs mb-1">Lunes a Sábados</span>
+                <span className="text-yellow-500 font-bold block uppercase text-xs mb-1">Lunes a Sabados</span>
                 <span className="block">8:00 a 13:00 hs</span>
                 <span className="block">15:00 a 19:00 hs</span>
               </div>
