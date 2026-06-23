@@ -8,7 +8,7 @@ const App = () => {
   const [currentQty, setCurrentQty] = useState('');
 
   // Datos de contacto de la ferretería
-  const phoneNumber = "5491164026088"; 
+  const phoneNumber = "5491171447794"; 
   const email = "barrionuevo.online@gmail.com";
   const address = "Av. Avellaneda 3384, Virreyes, Bs. As.";
 
@@ -322,12 +322,12 @@ const App = () => {
             <div className="flex items-center gap-3">
               <Phone className="text-yellow-500 flex-shrink-0" size={18} />
               <a
-                href="https://wa.me/5491164026088" 
+                href="https://wa.me/5491171447794" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="hover:text-yellow-500 transition-colors cursor-pointer"
               >
-                11-6402-6088 (WhatsApp)
+                11-7144-7794 (WhatsApp)
               </a>
             </div>
             <div className="flex items-center gap-3">
