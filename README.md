@@ -1,16 +1,56 @@
-# React + Vite
+# Ferretería Javier
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Sitio web de la ferretería: landing pública con pedido de presupuesto por WhatsApp, más una herramienta interna para armar presupuestos en mostrador.
 
-Currently, two official plugins are available:
+## Estructura del proyecto
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```
+ferreteria-javier/
+├── index.html              # Entrada de la app React (sitio público)
+├── public/
+│   ├── images/             # Assets estáticos (logo, fotos del hero, etc.)
+│   │   └── logo.png
+│   └── tools/              # Herramientas internas (HTML standalone, no React)
+│       └── presupuesto.html
+├── src/
+│   ├── App.jsx             # Landing completa (nav, hero, presupuesto, footer)
+│   ├── main.jsx            # Punto de entrada React
+│   └── index.css           # Estilos globales (Tailwind)
+├── package.json
+├── vite.config.js
+└── tailwind.config.js
+```
 
-## React Compiler
+## Comandos
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Comando | Descripción |
+|---------|-------------|
+| `npm install` | Instala dependencias (primera vez o tras clonar) |
+| `npm run dev` | Servidor de desarrollo con recarga en caliente |
+| `npm run build` | Compila para producción |
+| `npm run preview` | Preview de la build de producción |
+| `npm run lint` | Revisa el código con ESLint |
 
-## Expanding the ESLint configuration
+## URLs en desarrollo
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Con `npm run dev` (por defecto `http://localhost:5173`):
+
+| URL | Qué es |
+|-----|--------|
+| `/` | Sitio público (React) |
+| `/tools/presupuesto.html` | Herramienta interna de presupuestos (Firebase + impresión) |
+
+## Imágenes del hero
+
+Colocar en `public/images/`:
+
+- `entrada-afuera.jpg` — foto exterior (fade out al hacer scroll)
+- `entrada-adentro.jpg` — foto interior (fade in al hacer scroll)
+
+## Deploy
+
+Producción: [ferreteria-javier.vercel.app](https://ferreteria-javier.vercel.app)
+
+Tras mover el logo a `public/images/`, la preview de WhatsApp/redes usa:
+
+`https://ferreteria-javier.vercel.app/images/logo.png`

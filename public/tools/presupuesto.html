@@ -51,27 +51,38 @@
     .msg-guardado { font-size: 11px; color: green; text-align: center; margin-bottom: 8px; display: none; }
     .unidad-texto { display: none; font-size: 13px; }
 
-    /* ESTILOS ESPECÍFICOS PARA IMPRESIÓN (MILÍMETROS Y PUNTOS) */
+    /* ESTILOS ESPECÍFICOS PARA IMPRESIÓN (MILÍMETROS Y PUNTOS)
+       Mitad derecha de A4 apaisada (297 x 210 mm): la hoja se corta/dobla al medio en vertical;
+       la mitad izquierda queda en blanco para el segundo comprobante.
+       El presupuesto corre a lo largo (a lo alto de la hoja), no a lo ancho. */
     @media print {
-      @page { 
-        size: A4 landscape; 
-        margin: 0; 
-      }
-      body { 
-        background: white; 
-        padding: 0; 
+      @page {
+        size: A4 landscape;
         margin: 0;
-        display: block; 
       }
-      .container { 
-        box-shadow: none; 
-        width: 148.5mm; /* Exactamente la mitad de una A4 apaisada */
-        min-height: 209mm; /* Todo el alto de la hoja física */
-        height: auto; 
-        padding: 10mm; /* Márgenes internos fijos para que el texto respire */
+      body {
+        background: white;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        min-height: 210mm;
+        height: 210mm;
+        width: 297mm;
+      }
+      .container {
+        box-shadow: none;
+        width: 148.5mm;
+        max-height: none;
+        min-height: auto;
+        height: 210mm;
+        padding: 8mm 10mm;
         border-radius: 0;
-        border-right: 1px dashed #999; 
-        margin: 0; 
+        border-left: 1px dashed #999;
+        margin: 0;
+        flex-shrink: 0;
+        overflow: hidden;
       }
       
       /* Tipografía en pt (puntos) para asegurar un tamaño de lectura ideal en papel */

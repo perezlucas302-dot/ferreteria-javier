@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Phone, MapPin, Mail, Hammer, Wrench, PaintBucket, Trash2, Plus, Send, Users, CheckCircle, Clock, Instagram } from 'lucide-react';
 
 const App = () => {
@@ -76,6 +76,22 @@ const App = () => {
   // Link para consultas generales (Header)
   const whatsappConsultasUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent("Hola Ferretería Javier, tengo una consulta:")}`;
 
+  const heroRef = useRef(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!heroRef.current) return;
+      const { top, height } = heroRef.current.getBoundingClientRect();
+      const scrollableDistance = height - window.innerHeight;
+      const progress = Math.min(Math.max(-top / scrollableDistance, 0), 1);
+      setScrollProgress(progress);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <div className="min-h-screen bg-zinc-50 font-sans text-zinc-900 selection:bg-yellow-400">
       
@@ -105,22 +121,35 @@ const App = () => {
         </div>
       </nav>
 
-      {/* --- HERO SECTION (Limpio: Sin foto, con patrón de puntos) --- */}
-      <header className="bg-zinc-900 text-white py-20 px-4 text-center relative overflow-hidden">
-        {/* Fondo decorativo sutil (puntos amarillos) */}
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fbbf24_1px,transparent_1px)] [background-size:16px_16px]"></div>
-        
-        <div className="max-w-3xl mx-auto relative z-10">
-          <h2 className="text-4xl md:text-6xl font-extrabold mb-6 text-yellow-500">
-            SOLUCIONES SÓLIDAS <br/> <span className="text-white">PARA TU HOGAR</span>
-          </h2>
-          <p className="text-xl text-zinc-300 mb-8 max-w-2xl mx-auto">
-            Desde herramientas profesionales hasta el tornillo que te falta. 
-            Atención personalizada y experiencia de verdad.
-          </p>
-          <a href="#presupuesto" className="inline-block bg-white text-zinc-900 hover:bg-yellow-500 hover:text-black font-bold text-lg py-3 px-8 rounded-full transition-all transform hover:scale-105 shadow-xl">
-            Pedir Presupuesto Online
-          </a>
+      {/* --- HERO SECTION (Scroll crossfade entre exterior e interior) --- */}
+      <header ref={heroRef} className="relative" style={{ height: '200vh' }}>
+        <div className="sticky top-0 h-screen w-full overflow-hidden text-white text-center flex items-center justify-center">
+          <img
+            src="/images/entrada-afuera.jpg"
+            alt="Entrada de Ferretería Javier"
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ opacity: 1 - scrollProgress }}
+          />
+          <img
+            src="/images/entrada-adentro.jpg"
+            alt="Interior de Ferretería Javier"
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ opacity: scrollProgress }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-zinc-900/80 via-zinc-900/50 to-zinc-900/90"></div>
+
+          <div className="max-w-3xl mx-auto relative z-10 px-4">
+            <h2 className="text-4xl md:text-6xl font-extrabold mb-6 text-yellow-500">
+              SOLUCIONES SÓLIDAS <br/> <span className="text-white">PARA TU HOGAR</span>
+            </h2>
+            <p className="text-xl text-zinc-300 mb-8 max-w-2xl mx-auto">
+              Desde herramientas profesionales hasta el tornillo que te falta.
+              Atención personalizada y experiencia de verdad.
+            </p>
+            <a href="#presupuesto" className="inline-block bg-white text-zinc-900 hover:bg-yellow-500 hover:text-black font-bold text-lg py-3 px-8 rounded-full transition-all transform hover:scale-105 shadow-xl">
+              Pedir Presupuesto Online
+            </a>
+          </div>
         </div>
       </header>
 
