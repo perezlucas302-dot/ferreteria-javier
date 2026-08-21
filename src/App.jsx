@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Phone, MapPin, Mail, Hammer, Wrench, PaintBucket, Trash2, Plus, Send, Users, CheckCircle, Clock, Instagram } from 'lucide-react';
+import { Phone, MapPin, Mail, Wrench, PaintBucket, Trash2, Plus, Send, Users, CheckCircle, Clock, Instagram, ChevronDown } from 'lucide-react';
+import ServiceCard from './components/ServiceCard';
+import ToolSilhouettes from './components/ToolSilhouettes';
 
 const App = () => {
   // Estado para la lista de productos del presupuesto
@@ -11,6 +13,14 @@ const App = () => {
   const phoneNumber = "5491171447794"; 
   const email = "barrionuevo.online@gmail.com";
   const address = "Av. Avellaneda 3384, Virreyes, Bs. As.";
+
+  // Categorías rápidas: cada tarjeta hace un efecto "pop" al pasar el mouse o tocar
+  const categorias = [
+    { icon: PaintBucket, label: 'Pinturas' },
+    { icon: Wrench, label: 'Herramientas' },
+    { icon: CheckCircle, label: 'Fijaciones' },
+    { icon: Send, label: 'Electricidad' },
+  ];
 
   // EFECTO DE PROTECCIÓN: Advertencia al intentar recargar o cerrar la página
   useEffect(() => {
@@ -99,10 +109,10 @@ const App = () => {
       <nav className="bg-zinc-900 text-white sticky top-0 z-50 border-b-4 border-yellow-500 shadow-lg">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <div className="bg-yellow-500 p-2 rounded text-zinc-900">
-              <Hammer size={24} strokeWidth={2.5} />
-            </div>
-            <h1 className="text-2xl font-bold tracking-tight">FERRETERÍA <span className="text-yellow-500">JAVIER</span></h1>
+            <img src="/images/logo.png" alt="Ferretería Javier" className="h-10 w-10 md:h-12 md:w-12 rounded-full object-cover" />
+            {/* No es <h1>: la marca del nav se repite en toda la página (sticky).
+                El <h1> real es el título del hero, más abajo. */}
+            <p className="text-2xl font-bold tracking-tight">FERRETERÍA <span className="text-yellow-500">JAVIER</span></p>
           </div>
           
           {/* Botón de WhatsApp Directo */}
@@ -139,9 +149,9 @@ const App = () => {
           <div className="absolute inset-0 bg-gradient-to-b from-zinc-900/80 via-zinc-900/50 to-zinc-900/90"></div>
 
           <div className="max-w-3xl mx-auto relative z-10 px-4">
-            <h2 className="text-4xl md:text-6xl font-extrabold mb-6 text-yellow-500">
+            <h1 className="text-4xl md:text-6xl font-extrabold mb-6 text-yellow-500">
               SOLUCIONES SÓLIDAS <br/> <span className="text-white">PARA TU HOGAR</span>
-            </h2>
+            </h1>
             <p className="text-xl text-zinc-300 mb-8 max-w-2xl mx-auto">
               Desde herramientas profesionales hasta el tornillo que te falta.
               Atención personalizada y experiencia de verdad.
@@ -150,6 +160,19 @@ const App = () => {
               Pedir Presupuesto Online
             </a>
           </div>
+
+          {/* Guía de scroll: invita a scrollear y se desvanece apenas se empieza.
+              Usa "fixed" (en vez de "absolute") para anclarse siempre al borde
+              inferior real de la ventana, sin depender de la posición del
+              contenedor sticky (que al cargar la página todavía no está
+              "pegado" arriba y desplazaría el indicador fuera de vista). */}
+          <div
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center text-white/80 pointer-events-none"
+            style={{ opacity: Math.max(0, 1 - scrollProgress * 3) }}
+          >
+            <span className="text-xs uppercase tracking-widest mb-1">Deslizá para ver más</span>
+            <ChevronDown className="animate-bounce" size={28} />
+          </div>
         </div>
       </header>
 
@@ -157,9 +180,9 @@ const App = () => {
       <section className="py-16 bg-white px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold mb-4 flex items-center justify-center gap-2">
+            <h2 className="text-3xl font-bold mb-4 flex items-center justify-center gap-2">
               <Users className="text-yellow-600" /> ¿Quiénes Somos?
-            </h3>
+            </h2>
             <div className="w-24 h-1 bg-yellow-500 mx-auto mb-6"></div>
             <p className="text-lg text-zinc-600 max-w-3xl mx-auto">
               Somos una ferretería de barrio con mentalidad moderna. Nos enorgullece no solo vender herramientas, 
@@ -172,7 +195,7 @@ const App = () => {
             {/* Card Javier */}
             <div className="p-6 bg-zinc-50 rounded-xl shadow-sm border border-zinc-100 hover:border-yellow-500 transition-colors group">
               <div className="w-16 h-16 bg-zinc-900 group-hover:bg-yellow-500 transition-colors rounded-full flex items-center justify-center mx-auto mb-4 text-yellow-500 group-hover:text-zinc-900 font-bold text-2xl">J</div>
-              <h4 className="text-xl font-bold mb-2">Javier</h4>
+              <h3 className="text-xl font-bold mb-2">Javier</h3>
               <p className="text-xs font-bold text-yellow-600 mb-3 uppercase tracking-wide">Dueño & Fundador</p>
               <p className="text-zinc-600 text-sm">
                 "Más de 30 años en el rubro. El capitán del barco que conoce cada rincón de la ferretería."
@@ -182,7 +205,7 @@ const App = () => {
             {/* Card Jorge */}
             <div className="p-6 bg-zinc-50 rounded-xl shadow-sm border border-zinc-100 hover:border-yellow-500 transition-colors group">
               <div className="w-16 h-16 bg-zinc-900 group-hover:bg-yellow-500 transition-colors rounded-full flex items-center justify-center mx-auto mb-4 text-yellow-500 group-hover:text-zinc-900 font-bold text-2xl">J</div>
-              <h4 className="text-xl font-bold mb-2">Jorge</h4>
+              <h3 className="text-xl font-bold mb-2">Jorge</h3>
               <p className="text-xs font-bold text-yellow-600 mb-3 uppercase tracking-wide">Ventas</p>
               <p className="text-zinc-600 text-sm">
                 "Especialista en mostrador. Te ayuda a encontrar la solución exacta sin gastar de más."
@@ -192,7 +215,7 @@ const App = () => {
             {/* Card Ezequiel */}
             <div className="p-6 bg-zinc-50 rounded-xl shadow-sm border border-zinc-100 hover:border-yellow-500 transition-colors group">
               <div className="w-16 h-16 bg-zinc-900 group-hover:bg-yellow-500 transition-colors rounded-full flex items-center justify-center mx-auto mb-4 text-yellow-500 group-hover:text-zinc-900 font-bold text-2xl">E</div>
-              <h4 className="text-xl font-bold mb-2">Ezequiel</h4>
+              <h3 className="text-xl font-bold mb-2">Ezequiel</h3>
               <p className="text-xs font-bold text-yellow-600 mb-3 uppercase tracking-wide">Asistente</p>
               <p className="text-zinc-600 text-sm">
                 "El complemento ideal del equipo. Refuerza la atención los días clave para que no esperes de más."
@@ -202,7 +225,7 @@ const App = () => {
             {/* Card Lucas */}
             <div className="p-6 bg-zinc-50 rounded-xl shadow-sm border border-zinc-100 hover:border-yellow-500 transition-colors group">
               <div className="w-16 h-16 bg-zinc-900 group-hover:bg-yellow-500 transition-colors rounded-full flex items-center justify-center mx-auto mb-4 text-yellow-500 group-hover:text-zinc-900 font-bold text-2xl">L</div>
-              <h4 className="text-xl font-bold mb-2">Lucas</h4>
+              <h3 className="text-xl font-bold mb-2">Lucas</h3>
               <p className="text-xs font-bold text-yellow-600 mb-3 uppercase tracking-wide">Atención & Web</p>
               <p className="text-zinc-600 text-sm">
                 "Modernizando la ferretería. Encargado de que tus pedidos online lleguen rápido y sin errores."
@@ -213,33 +236,15 @@ const App = () => {
         </div>
       </section>
 
-      {/* --- CATEGORÍAS RÁPIDAS (CORREGIDO: Sin Hover engañoso) --- */}
-      <section className="bg-zinc-900 text-white py-12">
-        <div className="max-w-6xl mx-auto px-4">
-          <h3 className="text-center text-2xl font-bold mb-8">Todo lo que buscas</h3>
+      {/* --- CATEGORÍAS RÁPIDAS (tarjetas interactivas con popup de ejemplos) --- */}
+      <section className="relative bg-zinc-900 text-white py-12">
+        <ToolSilhouettes />
+        <div className="relative max-w-6xl mx-auto px-4">
+          <h2 className="text-center text-2xl font-bold mb-8">Todo lo que buscas</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            
-            {/* ÍTEMS ESTÁTICOS (Sin hover amarillo, cursor normal) */}
-            <div className="flex flex-col items-center p-4 bg-zinc-800 rounded cursor-default border border-zinc-700">
-              <PaintBucket className="mb-2 text-yellow-500" />
-              <span className="font-semibold text-zinc-200">Pinturas</span>
-            </div>
-            
-            <div className="flex flex-col items-center p-4 bg-zinc-800 rounded cursor-default border border-zinc-700">
-              <Wrench className="mb-2 text-yellow-500" />
-              <span className="font-semibold text-zinc-200">Herramientas</span>
-            </div>
-            
-            <div className="flex flex-col items-center p-4 bg-zinc-800 rounded cursor-default border border-zinc-700">
-              <CheckCircle className="mb-2 text-yellow-500" />
-              <span className="font-semibold text-zinc-200">Fijaciones</span>
-            </div>
-            
-            <div className="flex flex-col items-center p-4 bg-zinc-800 rounded cursor-default border border-zinc-700">
-              <Send className="mb-2 text-yellow-500" />
-              <span className="font-semibold text-zinc-200">Electricidad</span>
-            </div>
-
+            {categorias.map((cat) => (
+              <ServiceCard key={cat.label} icon={cat.icon} label={cat.label} />
+            ))}
           </div>
         </div>
       </section>
@@ -248,7 +253,7 @@ const App = () => {
       <section id="presupuesto" className="py-16 px-4 bg-yellow-50">
         <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-yellow-200">
           <div className="bg-zinc-900 p-6 text-center">
-            <h3 className="text-2xl font-bold text-white">Armá tu pedido</h3>
+            <h2 className="text-2xl font-bold text-white">Armá tu pedido</h2>
             <p className="text-yellow-500 text-sm mt-1">Te confirmamos precio y stock por WhatsApp</p>
           </div>
           
@@ -338,12 +343,13 @@ const App = () => {
       </section>
 
       {/* --- FOOTER / CONTACTO --- */}
-      <footer id="contacto" className="bg-zinc-950 text-zinc-400 py-12 border-t border-zinc-800">
-        <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-8">
+      <footer id="contacto" className="relative bg-zinc-950 text-zinc-400 py-12 border-t border-zinc-800 overflow-hidden">
+        <ToolSilhouettes />
+        <div className="relative max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-8">
           
           {/* Columna 1: Contacto (primero) */}
           <div className="flex flex-col gap-4">
-            <h4 className="text-white font-bold mb-2">Contacto & Ubicación</h4>
+            <h3 className="text-white font-bold mb-2">Contacto & Ubicación</h3>
             <div className="flex items-start gap-3">
               <MapPin className="text-yellow-500 mt-1 flex-shrink-0" size={18} />
               <span>{address}</span>
@@ -378,9 +384,9 @@ const App = () => {
           
           {/* Columna 2: Horarios */}
           <div className="flex flex-col gap-4">
-            <h4 className="text-white font-bold mb-2 flex items-center gap-2">
+            <h3 className="text-white font-bold mb-2 flex items-center gap-2">
               <Clock className="text-yellow-500" size={20} /> Horarios de Atención
-            </h4>
+            </h3>
             <div className="bg-zinc-900 p-4 rounded-lg border border-zinc-800 text-sm">
               <div className="mb-3">
                 <span className="text-yellow-500 font-bold block uppercase text-xs mb-1">Lunes a Sabados</span>
@@ -396,7 +402,7 @@ const App = () => {
 
           {/* Columna 3: Marca de agua */}
           <div className="md:col-span-1">
-            <h4 className="text-white text-xl font-bold mb-4">FERRETERÍA JAVIER</h4>
+            <h3 className="text-white text-xl font-bold mb-4">FERRETERÍA JAVIER</h3>
             <p className="mb-4 max-w-sm text-sm">
               Tu ferretería de confianza en Virreyes. Soluciones rápidas, precios justos y la mejor atención del barrio.
             </p>

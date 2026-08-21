@@ -5,7 +5,11 @@
     
     <!-- FAVICON: Usamos tu imagen PNG -->
     <link rel="icon" type="image/png" href="/images/logo.png" />
-    
+    <link rel="apple-touch-icon" href="/images/logo.png" />
+
+    <!-- URL CANÓNICA: evita duplicados si el sitio queda accesible por más de una URL -->
+    <link rel="canonical" href="https://ferreteria-javier.vercel.app/" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <!-- TÍTULO Y DESCRIPCIÓN -->
@@ -13,16 +17,71 @@
     <meta name="description" content="Tu ferretería de confianza en Virreyes. Herramientas, electricidad, pintura y fijaciones. Pedí tu presupuesto online por WhatsApp." />
     
     <!-- REDES SOCIALES / WHATSAPP (Open Graph) -->
+    <meta property="og:url" content="https://ferreteria-javier.vercel.app/" />
     <meta property="og:title" content="Ferretería Javier - Presupuestos Online" />
     <meta property="og:description" content="Armá tu lista de materiales y pedí cotización al instante por WhatsApp. Estamos en Av. Avellaneda 3384, Virreyes." />
     
     <!-- IMAGEN DE PREVIEW (WhatsApp): Usamos tu logo.png -->
     <meta property="og:image" content="https://ferreteria-javier.vercel.app/images/logo.png" />
     <meta property="og:image:type" content="image/png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    <meta property="og:image:width" content="990" />
+    <meta property="og:image:height" content="990" />
     <meta property="og:type" content="website" />
-    
+
+    <!-- TWITTER CARD -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Ferretería Javier - Presupuestos Online" />
+    <meta name="twitter:description" content="Armá tu lista de materiales y pedí cotización al instante por WhatsApp. Estamos en Av. Avellaneda 3384, Virreyes." />
+    <meta name="twitter:image" content="https://ferreteria-javier.vercel.app/images/logo.png" />
+
+    <!-- DATOS ESTRUCTURADOS (Google): permite que aparezcan horario, teléfono
+         y dirección directamente en el resultado de búsqueda / Google Maps.
+         OJO: estos datos están duplicados a mano desde src/App.jsx (teléfono,
+         email, dirección, horarios) porque este archivo es HTML estático que
+         los buscadores leen sin ejecutar React — si cambian esos datos en
+         App.jsx, hay que actualizarlos acá también. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HardwareStore",
+      "name": "Ferretería Javier",
+      "image": "https://ferreteria-javier.vercel.app/images/logo.png",
+      "url": "https://ferreteria-javier.vercel.app/",
+      "telephone": "+5491171447794",
+      "email": "barrionuevo.online@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Av. Avellaneda 3384",
+        "addressLocality": "Virreyes",
+        "addressRegion": "Buenos Aires",
+        "addressCountry": "AR"
+      },
+      "sameAs": [
+        "https://www.instagram.com/ferreteriajavier.7"
+      ],
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+          "opens": "08:00",
+          "closes": "13:00"
+        },
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+          "opens": "15:00",
+          "closes": "19:00"
+        },
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Sunday", "https://schema.org/PublicHolidays"],
+          "opens": "09:00",
+          "closes": "13:00"
+        }
+      ]
+    }
+    </script>
+
   </head>
   <body>
     <div id="root"></div>
